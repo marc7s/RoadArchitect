@@ -1,19 +1,13 @@
 # RoadArchitect
-[![GitHub release](https://img.shields.io/github/release/FritzsHero/RoadArchitect.svg)](https://github.com/FritzsHero/RoadArchitect/releases/tag/2.0.0)
-[![Github All Releases](https://img.shields.io/github/downloads/FritzsHero/RoadArchitect/total.svg)](https://github.com/FritzsHero/RoadArchitect/releases)
-[![GitHub contributors](https://img.shields.io/github/contributors/FritzsHero/RoadArchitect.svg)](https://github.com/FritzsHero/RoadArchitect/graphs/contributors)
-[![Chat](https://img.shields.io/badge/chat-on%20discord-lightgrey.svg)](https://discord.gg/cevveEr)
-
-
 Road Architect for Unity. Road Architect is a professional quality road system creator featuring dynamic intersections, bridges and many other road objects.
 
 Road Architect is currently being developed with the latest Unity LTS release 2020.3 and is working with most of the previous versions. If interested in contributing please open an issue or pull request.
 
-- It is recommend to download a release from the Releases tab
-- The resulting folder should be copied to the root of your Assets directory and named RoadArchitect
-- https://github.com/FritzsHero/RoadArchitect/releases
-- Documentation: https://github.com/FritzsHero/RoadArchitect/wiki
-   - Note: The Road Architect menu is located under the "Window" menu.
+## New features
+# Lane guide line generation
+![Lane guide line generation](ManualImages/TrafficSimulator/LaneGuideLineGeneration.png)
+
+In order to allow traffic to follow the roads, a guide line for each lane is generated that the traffic can either steer towards or lock onto.
 
 ## Videos
 - Overview: https://www.youtube.com/watch?v=AUwud3XklJ8

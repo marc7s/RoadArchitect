@@ -695,6 +695,8 @@ namespace RoadArchitect
                         tMesh = new Mesh();
                     }
                     tMesh = MeshSetup1Helper(ref tMesh, RoadVectors.ToArray(), ref tris, ref normals);
+                    
+                    LaneGuideLineGeneration.updateLaneGuideLines(road, RoadVectors);
                     tMeshSkip = false;
                 }
                 else
