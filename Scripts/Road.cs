@@ -31,6 +31,7 @@ namespace RoadArchitect
         public GameObject MeshiLanes3;
         public GameObject MeshiMainPlates;
         public GameObject MeshiMarkerPlates;
+        public GameObject Lanes;
 
         [System.NonSerialized]
         public string editorTitleString = "";
@@ -748,14 +749,24 @@ namespace RoadArchitect
 
 
             // Delete mainMeshes of this road
-            int childCount = transform.childCount;
             GameObject mainMeshes = null;
-            for (int i = 0; i < childCount; i++)
+            for (int i = 0; i < transform.childCount; i++)
             {
                 if (transform.GetChild(i).transform.name.ToLower().Contains("mainmeshes"))
                 {
                     mainMeshes = transform.GetChild(i).transform.gameObject;
                     Object.DestroyImmediate(mainMeshes);
+                }
+            }
+
+            // Delete lanes of this road
+            GameObject lanes = null;
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                if (transform.GetChild(i).transform.name.ToLower().Contains("lanes"))
+                {
+                    lanes = transform.GetChild(i).transform.gameObject;
+                    Object.DestroyImmediate(lanes);
                 }
             }
 
@@ -806,6 +817,10 @@ namespace RoadArchitect
                 if (MeshiMarkerPlates != null)
                 {
                     Object.DestroyImmediate(MeshiMarkerPlates);
+                }
+                if (Lanes != null)
+                {
+                    Object.DestroyImmediate(Lanes);
                 }
                 RootUtils.EndProfiling(this);
                 return;

@@ -473,7 +473,7 @@ namespace RoadArchitect
         #region "Init and nullify"
         private void InitGameObjects()
         {
-            //Destry past objects:
+            //Destroy past objects:
             if (road.MainMeshes != null)
             {
                 MeshFilter[] MFArray = road.MainMeshes.GetComponentsInChildren<MeshFilter>();
@@ -492,12 +492,16 @@ namespace RoadArchitect
 
                 Object.DestroyImmediate(road.MainMeshes);
             }
+            if(road.Lanes != null) {
+                Object.DestroyImmediate(road.Lanes);
+            }
+            
 
-            //Main mesh object:
+            // Main mesh object
             road.MainMeshes = new GameObject("MainMeshes");
             road.MainMeshes.transform.parent = road.transform;
 
-            //Road and shoulders:
+            // Road and shoulders
             road.MeshRoad = new GameObject("RoadMesh");
             road.MeshShoR = new GameObject("ShoulderR");
             road.MeshShoL = new GameObject("ShoulderL");
@@ -505,7 +509,7 @@ namespace RoadArchitect
             road.MeshShoR.transform.parent = road.MainMeshes.transform;
             road.MeshShoL.transform.parent = road.MainMeshes.transform;
 
-            //Intersections:
+            // Intersections
             road.MeshiLanes = new GameObject("MeshiLanes");
             road.MeshiLanes0 = new GameObject("MeshiLanes0");
             road.MeshiLanes1 = new GameObject("MeshiLanes1");
@@ -520,6 +524,10 @@ namespace RoadArchitect
             road.MeshiLanes3.transform.parent = road.MainMeshes.transform;
             road.MeshiMainPlates.transform.parent = road.MainMeshes.transform;
             road.MeshiMarkerPlates.transform.parent = road.MainMeshes.transform;
+
+            // Lanes
+            road.Lanes = new GameObject(LaneGeneration.LANE_CONTAINER_NAME);
+            road.Lanes.transform.parent = road.transform;
         }
 
 
@@ -674,7 +682,7 @@ namespace RoadArchitect
 
         #region "Mesh Setup1"	
         /// <summary>
-        /// Creates meshes and assigns vertices, triangles and normals. If multithreading enabled, this occurs inbetween threaded jobs since unity library can't be used in threads.
+        /// Creates meshes and lanes and assigns vertices, triangles and normals. If multithreading enabled, this occurs inbetween threaded jobs since unity library can't be used in threads.
         /// </summary>
         public void MeshSetup1()
         {
@@ -696,7 +704,7 @@ namespace RoadArchitect
                     }
                     tMesh = MeshSetup1Helper(ref tMesh, RoadVectors.ToArray(), ref tris, ref normals);
                     
-                    LaneGuideLineGeneration.updateLaneGuideLines(road, RoadVectors);
+                    LaneGeneration.updateLanes(road, RoadVectors);
                     tMeshSkip = false;
                 }
                 else

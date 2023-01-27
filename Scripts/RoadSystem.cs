@@ -35,8 +35,8 @@ namespace RoadArchitect
             roadObj.transform.parent = transform;
             Road road = roadObj.AddComponent<Road>();
 
-            //Spline:
-            GameObject splineObj = new GameObject("Spline");
+            // Splines
+            GameObject splineObj = new GameObject("Splines");
             splineObj.transform.parent = road.transform;
             road.spline = splineObj.AddComponent<SplineC>();
             road.spline.splineRoot = splineObj;
