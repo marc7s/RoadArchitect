@@ -4,8 +4,8 @@ Road Architect for Unity. Road Architect is a professional quality road system c
 Road Architect is currently being developed with the latest Unity LTS release 2020.3 and is working with most of the previous versions. If interested in contributing please open an issue or pull request.
 
 ## New features
-### Lane guide line generation
-![Lane guide line generation](ManualImages/TrafficSimulator/LaneGuideLineGeneration.png)
+### Lane generation
+![Lane generation](ManualImages/TrafficSimulator/LaneGuideLineGeneration.png)
 
 In order to allow traffic to follow the roads, a guide line for each lane is generated that the traffic can either steer towards or lock onto.
 
