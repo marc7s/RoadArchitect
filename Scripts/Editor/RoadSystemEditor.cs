@@ -41,8 +41,8 @@ namespace RoadArchitect
         private Texture2D warningLabelBG;
         private GUIStyle warningLabelStyle;
         private GUIStyle loadButton = null;
+        public DrivingSide drivingSide;
         #endregion
-
 
         private void OnEnable()
         {
@@ -58,10 +58,16 @@ namespace RoadArchitect
             serializedObject.Update();
             EditorStyles.label.wordWrap = true;
             
-            if(!isInitialized)
+            if (!isInitialized)
             {
                 isInitialized = true;
                 InitChecks();
+            }
+            DrivingSide selectedValue = (DrivingSide)EditorGUILayout.EnumPopup("Driving side", drivingSide);
+            if (selectedValue != drivingSide)
+            {
+                drivingSide = selectedValue;
+                roadSystem.UpdateAllRoads();
             }
 
             //Add road button:
@@ -76,7 +82,7 @@ namespace RoadArchitect
             if (GUILayout.Button("Update all roads", EditorStyles.miniButton, GUILayout.Width(120f)))
             {
                 roadSystem.UpdateAllRoads();
-            }
+            }        
 
             //Multi-threading input:
             isTempMultithreading.boolValue = EditorGUILayout.Toggle("Multi-threading enabled", roadSystem.isMultithreaded);

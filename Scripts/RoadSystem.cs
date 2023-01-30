@@ -5,6 +5,11 @@ using UnityEngine;
 
 namespace RoadArchitect
 {
+    public enum DrivingSide
+    {
+        Left,
+        Right
+    }
     public class RoadSystem : MonoBehaviour
     {
         #region "Vars"
@@ -19,6 +24,7 @@ namespace RoadArchitect
         #endregion
 
 
+        public DrivingSide drivingSide = DrivingSide.Right;
         /// <summary> Adds a new road to this RoadSystem </summary>
         public GameObject AddRoad(bool _isForceSelected = false)
         {

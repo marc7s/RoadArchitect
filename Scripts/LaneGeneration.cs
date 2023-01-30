@@ -82,6 +82,11 @@ namespace RoadArchitect {
                 // Separate the left and right lane indexes
                 int index = isLeft ? i / 2 : (i - 1) / 2;
 
+                // Reverse the lane if it is in the opposite direction
+                if ((isLeft && road.roadSystem.drivingSide == DrivingSide.Right) || (!isLeft && road.roadSystem.drivingSide == DrivingSide.Left))
+                {
+                    roadLanes[i].Reverse();
+                }
                 // Draw the lane
                 DrawLane(road, roadLanes[i], index, GetColor(i), isLeft);
             }
