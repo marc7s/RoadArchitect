@@ -11,6 +11,7 @@ namespace RoadArchitect
         public Road road;
 
         public List<Vector3> RoadVectors;
+        public List<Vector3> LaneVectors;
         public List<Vector3> ShoulderR_Vectors;
         public List<Vector3> ShoulderL_Vectors;
 
@@ -263,6 +264,11 @@ namespace RoadArchitect
             road = _road;
             Nullify();
             RoadVectors = new List<Vector3>();
+            
+            // A combination of RoadVectors but with combined with intersection data to keep the vectors level
+            // since the RoadVectors are below the intersection where there is an intersection
+            LaneVectors = new List<Vector3>();
+            
             ShoulderR_Vectors = new List<Vector3>();
             ShoulderL_Vectors = new List<Vector3>();
             normals_ShoulderR_averageStartIndexes = new List<int>();
@@ -687,6 +693,28 @@ namespace RoadArchitect
         public void MeshSetup1()
         {
             Mesh MeshBuffer = null;
+            
+            // Get the unique road vectors
+            LaneVectors = LaneGeneration.getUniqueRoadVectors(RoadVectors);
+            
+            // Set the threshold that determines if there is an intersection
+            const float intersectionThreshold = 0.1f;
+            
+            Vector3 prev = LaneVectors[0];
+            // Go through all road vectors
+            for(int i = 1; i < LaneVectors.Count; i++)
+            {
+                Vector3 v = LaneVectors[i];
+                // Check if the y value changes suddenly indicating an intersection where the road mesh dives under the intersection mesh
+                if(v.y > prev.y + intersectionThreshold || v.y < prev.y - intersectionThreshold) {
+                    // If so, set the y value to the previous y value, ignoring the sudden change
+                    v = new Vector3(v.x, prev.y, v.z);
+
+                    // Update the lane vector
+                    LaneVectors[i] = v;
+                }
+                prev = v;
+            }
 
             if (isInterseOn)
             {
@@ -703,8 +731,7 @@ namespace RoadArchitect
                         tMesh = new Mesh();
                     }
                     tMesh = MeshSetup1Helper(ref tMesh, RoadVectors.ToArray(), ref tris, ref normals);
-                    
-                    LaneGeneration.updateLanes(road, RoadVectors);
+        
                     tMeshSkip = false;
                 }
                 else
@@ -820,6 +847,8 @@ namespace RoadArchitect
                 MeshSetup1IntersectionParts();
             }
 
+            LaneGeneration.updateLanes(road, LaneVectors);
+
             MeshBuffer = null;
         }
 
@@ -870,17 +899,68 @@ namespace RoadArchitect
         {
             int mCount = road.spline.GetNodeCount();
             bool bHasInter = false;
+            
+            // Save the index of the intersection node
+            int intersectionNodeIndex = -1;
+            
             for (int index = 0; index < mCount; index++)
             {
                 if (road.spline.nodes[index].isIntersection)
                 {
                     bHasInter = true;
+                    // Save the intersection node index
+                    intersectionNodeIndex = index;
                     break;
                 }
             }
             if (!bHasInter)
             {
                 return;
+            }
+
+            // Get the intersection node
+            SplineN intersectionNode = road.spline.nodes[intersectionNodeIndex];
+
+            // Get the intersection for the node
+            RoadIntersection intersection = intersectionNode.intersection;
+            
+            // Only cut off the lanes for three way intersections
+            if(intersection.intersectionType == RoadIntersection.IntersectionTypeEnum.ThreeWay && intersectionNode.isEndPoint) {
+                int intersectionWidth = intersection.intersectionWidth;
+                
+                // Calculate a cutoff bounding box used for cutting off the lanes
+                Bounds cutoff = new Bounds(intersectionNode.pos, new Vector3(intersectionWidth, 5, intersectionWidth));
+                
+                // Used for debugging the three way intersection lane cutoff by displaying the bounding box of the cutoff
+                /*
+                const bool debugThreewayIntersectionLaneCutoff = false;
+                if(debugThreewayIntersectionLaneCutoff) {
+                    List<Vector3> intersectionVectors = new List<Vector3>() {
+                        cutoff.center + new Vector3(cutoff.extents.x, -cutoff.extents.y, cutoff.extents.z),
+                        cutoff.center + new Vector3(cutoff.extents.x, -cutoff.extents.y, -cutoff.extents.z),
+                        cutoff.center + new Vector3(-cutoff.extents.x, -cutoff.extents.y, -cutoff.extents.z),
+                        cutoff.center + new Vector3(-cutoff.extents.x, -cutoff.extents.y, cutoff.extents.z),
+                        cutoff.center + new Vector3(cutoff.extents.x, -cutoff.extents.y, cutoff.extents.z),
+                        cutoff.center + new Vector3(cutoff.extents.x, cutoff.extents.y, cutoff.extents.z),
+                        cutoff.center + new Vector3(cutoff.extents.x, cutoff.extents.y, -cutoff.extents.z),
+                        cutoff.center + new Vector3(-cutoff.extents.x, cutoff.extents.y, -cutoff.extents.z),
+                        cutoff.center + new Vector3(-cutoff.extents.x, cutoff.extents.y, cutoff.extents.z),
+                        cutoff.center + new Vector3(cutoff.extents.x, cutoff.extents.y, cutoff.extents.z)
+                    };
+                    LaneGeneration.DrawDebugLine(intersectionVectors, Color.white);
+                }
+                */
+
+                // Go through all road vectors
+                for(int i = LaneVectors.Count - 1; i >= 0; i--)
+                {
+                    Vector3 v = LaneVectors[i];
+                    // Check if the vector is inside the cutoff bounding box
+                    if(cutoff.Contains(v)) {
+                        // Remove the lane vector
+                        LaneVectors.RemoveAt(i);
+                    }
+                }
             }
 
             int vCount = -1;

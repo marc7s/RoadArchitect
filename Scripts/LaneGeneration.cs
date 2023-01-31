@@ -15,11 +15,15 @@ namespace RoadArchitect {
             return colors[seed % colors.Count];
         }
 
+        // Get a unique list of the road vectors
+        public static List<Vector3> getUniqueRoadVectors(List<Vector3> RoadVectors){
+            return RoadVectors.Distinct().ToList();
+        }
+
         /// <summary>Updates the lanes</summary>
-        public static void updateLanes(Road road, List<Vector3> RoadVectors) 
+        public static void updateLanes(Road road, List<Vector3> uniqueRoadVectors) 
         {
             List<List<Vector3>> roadLanes = new List<List<Vector3>>();
-            List<Vector3> uniqueRoadVectors = RoadVectors.Distinct().ToList();
 
             // Add an empty list for each lane
             for(int i = 0; i < road.laneAmount; i++) 
@@ -132,6 +136,21 @@ namespace RoadArchitect {
             
             // Draw the lane path
             DrawLanePath(laneObject, lane, color);
+        }
+
+        /// <summary>Draws a line, used for debugging</summary>
+        public static void DrawDebugLine(List<Vector3> line, Color color) 
+        {
+            if(line.Count < 1) return;
+            
+            // Create the line object
+            GameObject lineObject = new GameObject();
+
+            // Add a line renderer to the lane
+            lineObject.AddComponent<LineRenderer>();
+            
+            // Draw the lane path
+            DrawLanePath(lineObject, line, color);
         }
     }
 }
