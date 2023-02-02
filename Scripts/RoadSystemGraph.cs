@@ -30,7 +30,10 @@ namespace RoadArchitect {
     {
         private const string GRAPH_NODE_SPHERE_NAME = "Graph Node";
         private const float GRAPH_NODE_SPHERE_SIZE = 15f;
-        private const float EDGE_LINE_WIDTH = 5f;
+        private const float EDGE_LINE_WIDTH = 4f;
+
+        private const float GRAPH_LIFT = 20f;
+
         // The road graph, key is the corresponding splines node's uID
         private static Dictionary<string, GraphNode> roadSystemGraph;
         /// <summary> Generates a road graph from the given road system </summary>
@@ -161,31 +164,37 @@ namespace RoadArchitect {
                 // Name it and place it on the correct location
                 nodeObject.name = GRAPH_NODE_SPHERE_NAME;
                 nodeObject.transform.parent = roadSystem.Graph.transform;
-                nodeObject.transform.position = node.Node.transform.position;
+                nodeObject.transform.position = lift(node.Node.transform.position);
+
+                // Give it a material and color
+                Material mat = new Material(Shader.Find("Standard"));
+                mat.SetColor("_Color", Color.red);
+                nodeObject.GetComponent<Renderer>().material = mat;
 
                 // Set the scale of the sphere
                 nodeObject.transform.localScale = new Vector3(GRAPH_NODE_SPHERE_SIZE, GRAPH_NODE_SPHERE_SIZE, GRAPH_NODE_SPHERE_SIZE);
                 
-                nodeObject.AddComponent<LineRenderer>();
-                
-                // Create a line renderer for the edges
-                LineRenderer lr = nodeObject.GetComponent<LineRenderer>();
-                
                 // Create a list to contain all the graph node positions
-                List<Vector3> graphNodePositions = new List<Vector3>(){ node.Node.transform.position };
+                List<Vector3> graphNodePositions = new List<Vector3>(){ lift(node.Node.transform.position) };
                 
                 // Add the end node of each edge to the list of positions
                 foreach (GraphEdge edge in node.Edges)
                 {
                     // To draw the graph, draw the line from the origin node to the target of the edge, and then back to the origin
                     // This is to make sure we only draw lines along the edges
-                    graphNodePositions.Add(edge.EndNode.Node.transform.position);
-                    graphNodePositions.Add(node.Node.transform.position);
+                    graphNodePositions.Add(lift(edge.EndNode.Node.transform.position));
+                    graphNodePositions.Add(lift(node.Node.transform.position));
                 }
-                lr.SetPositions(graphNodePositions.ToArray());
-                lr.startWidth = EDGE_LINE_WIDTH;
-                lr.endWidth = EDGE_LINE_WIDTH;
+
+                // Draw the lines between the graph nodes
+                LaneGeneration.DrawDebugLine(graphNodePositions, color: Color.blue, width: EDGE_LINE_WIDTH, parent: nodeObject.gameObject);
             }
+        }
+
+        /// <summary>Return a vertically transposed vector for creating the graph above the road system</summary>
+        private static Vector3 lift(Vector3 vector)
+        {
+            return vector + Vector3.up * GRAPH_LIFT;
         }
     }
 }
