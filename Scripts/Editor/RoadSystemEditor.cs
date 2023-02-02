@@ -18,7 +18,8 @@ namespace RoadArchitect
         //Serialized properties:
         private SerializedProperty isTempMultithreading;
         private SerializedProperty isTempSaveMeshAssets;
-
+        private SerializedProperty showRoadSystemGraphButton;
+        private SerializedProperty drivingSide;
         //Editor only variables:
         private bool isInitialized;
 
@@ -41,7 +42,8 @@ namespace RoadArchitect
         private Texture2D warningLabelBG;
         private GUIStyle warningLabelStyle;
         private GUIStyle loadButton = null;
-        public DrivingSide drivingSide;
+  
+
         #endregion
 
         private void OnEnable()
@@ -50,11 +52,21 @@ namespace RoadArchitect
 
             isTempMultithreading = serializedObject.FindProperty("isMultithreaded");
             isTempSaveMeshAssets = serializedObject.FindProperty("isSavingMeshes");
+            showRoadSystemGraphButton = serializedObject.FindProperty("ShowGraph");
+            drivingSide = serializedObject.FindProperty("drivingSide");
         }
 
 
         public override void OnInspectorGUI()
         {
+            showRoadSystemGraphButton.boolValue = EditorGUILayout.Toggle("Show Road System Graph", roadSystem.ShowGraph);
+            // Set the ShowGraph property and update the road system graph if the button does not correspond to the ShowGraph property
+            if (showRoadSystemGraphButton.boolValue != roadSystem.ShowGraph)
+            {
+                roadSystem.ShowGraph = showRoadSystemGraphButton.boolValue;
+                roadSystem.UpdateRoadSystemGraph();
+            }
+
             serializedObject.Update();
             EditorStyles.label.wordWrap = true;
             
@@ -63,12 +75,14 @@ namespace RoadArchitect
                 isInitialized = true;
                 InitChecks();
             }
-            DrivingSide selectedValue = (DrivingSide)EditorGUILayout.EnumPopup("Driving side", drivingSide);
-            if (selectedValue != drivingSide)
+            
+            drivingSide.enumValueIndex = (int)(DrivingSide)EditorGUILayout.EnumPopup("Driving side", (DrivingSide)drivingSide.enumValueIndex);
+            if (drivingSide.enumValueIndex != (int)roadSystem.drivingSide)
             {
-                drivingSide = selectedValue;
+                roadSystem.drivingSide = (DrivingSide)drivingSide.enumValueIndex;
                 roadSystem.UpdateAllRoads();
             }
+
 
             //Add road button:
             RoadArchitect.EditorUtilities.DrawLine();

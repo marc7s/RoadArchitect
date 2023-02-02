@@ -1,5 +1,6 @@
 #region "Imports"
 using UnityEngine;
+using System.Collections.Generic;
 #endregion
 
 
@@ -21,6 +22,10 @@ namespace RoadArchitect
         public bool isAllowingRoadUpdates = true;
 
         public Camera editorPlayCamera = null;
+        public GameObject Graph;
+        private Dictionary<string, GraphNode> roadGraph;
+        [UnityEngine.Serialization.FormerlySerializedAs("ShowGraph")]
+        public bool ShowGraph = false;
         #endregion
 
 
@@ -99,6 +104,8 @@ namespace RoadArchitect
                 road.PiggyBacks = piggys;
             }
             road.UpdateRoad();
+            // update the road graph
+            UpdateRoadSystemGraph();
         }
 
 
@@ -135,6 +142,37 @@ namespace RoadArchitect
                     road.isSavingMeshes = _isSavingMeshes;
                 }
             }
+        }
+        public void UpdateRoadSystemGraph()
+        {
+            // Clear the graph
+            ClearRoadGraph();
+            
+            // Create a new empty graph
+            CreateEmptyRoadGraph();
+            
+            // Generate a new graph
+            roadGraph = RoadSystemGraph.GenerateRoadGraph(this);
+
+            // Display the graph if the setting is active
+            if (ShowGraph) {
+                RoadSystemGraph.DrawGraph(this, roadGraph);
+            }
+                
+        }
+
+        private void ClearRoadGraph() {
+            roadGraph = null;
+            if(Graph != null) {
+                Object.DestroyImmediate(Graph);
+            }
+            
+            Graph = null;
+        }
+
+        private void CreateEmptyRoadGraph() {
+            Graph = new GameObject("Graph");
+            Graph.transform.parent = transform;
         }
     }
 }

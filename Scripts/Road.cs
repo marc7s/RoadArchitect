@@ -884,6 +884,8 @@ namespace RoadArchitect
             {
                 UpdateRoadNoMultiThreading();
             }
+            // update the road systems road graph
+            this.roadSystem.UpdateRoadSystemGraph();
         }
 
 

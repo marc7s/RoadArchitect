@@ -113,18 +113,16 @@ namespace RoadArchitect {
             LineRenderer lr = line.GetComponent<LineRenderer>();
 
             // Give it a material
-            lr.material = new Material(Shader.Find("Legacy Shaders/Particles/Alpha Blended Premultiply"));
+            lr.sharedMaterial = new Material(Shader.Find("Standard"));
 
             // Give it a color
-            lr.startColor = color;
-            lr.endColor = color;
+            lr.sharedMaterial.SetColor("_Color", color);
             
             // Give it a width
             lr.startWidth = width;
             lr.endWidth = width;
             
             // Set the positions
-            lr.positionCount = lane.Count;
             lr.SetPositions(lane.ToArray());
         }
 
