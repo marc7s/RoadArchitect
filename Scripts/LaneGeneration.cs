@@ -107,7 +107,7 @@ namespace RoadArchitect {
             }
         }
         /// <summary>Helper function that performs the drawing of a lane's path</summary>
-        private static void DrawLanePath(GameObject line, List<Vector3> lane, Color color)
+        private static void DrawLanePath(GameObject line, List<Vector3> lane, Color color, float width = 0.5f)
         {
             // Get the line renderer
             LineRenderer lr = line.GetComponent<LineRenderer>();
@@ -120,8 +120,8 @@ namespace RoadArchitect {
             lr.endColor = color;
             
             // Give it a width
-            lr.startWidth = 0.5f;
-            lr.endWidth = 0.5f;
+            lr.startWidth = width;
+            lr.endWidth = width;
             
             // Set the positions
             lr.positionCount = lane.Count;
@@ -146,11 +146,11 @@ namespace RoadArchitect {
             laneObject.AddComponent<LineRenderer>();
             
             // Draw the lane path
-            DrawLanePath(laneObject, lane, color);
+            DrawLanePath(laneObject, lane, color: color);
         }
 
         /// <summary>Draws a line, used for debugging</summary>
-        public static void DrawDebugLine(List<Vector3> line, Color color) 
+        public static void DrawDebugLine(List<Vector3> line, Color? color = null, float width = 0.5f) 
         {
             if(line.Count < 1) return;
             
@@ -161,7 +161,7 @@ namespace RoadArchitect {
             lineObject.AddComponent<LineRenderer>();
             
             // Draw the lane path
-            DrawLanePath(lineObject, line, color);
+            DrawLanePath(lineObject, line, color: color ?? Color.red, width: width);
         }
     }
 }
