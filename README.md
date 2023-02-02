@@ -9,6 +9,11 @@ Road Architect is currently being developed with the latest Unity LTS release 20
 
 In order to allow traffic to follow the roads, a guide line for each lane is generated that the traffic can either steer towards or lock onto.
 
+### Road system graph generation
+![Road system graph generation](ManualImages/TrafficSimulator/RoadSystemGraph.png)
+
+In order to create a navigation system for the road system, a graph representation of the road system can be generated. This graph can then for example be used with graph search algorithms to navigate the roads.
+
 ## Videos
 - Overview: https://www.youtube.com/watch?v=AUwud3XklJ8
 - 2.5 minutes: https://www.youtube.com/watch?v=DZWYfgDNSoo
