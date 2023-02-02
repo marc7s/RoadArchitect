@@ -76,6 +76,17 @@ namespace RoadArchitect {
                     }
                 }
             }
+
+            // Get all the end points of the road
+            List<SplineN> endNodes = road.spline.nodes.FindAll(n => n.isEndPoint);
+            
+            // If there are two end points, and they are located at the same position that means that the road is looped
+            if(endNodes.Count == 2 && endNodes[0].pos == endNodes[1].pos) {
+                // Since the road is looped, we add a copy of the first position of each lane to the end of the lane in order to close the loop
+                foreach(List<Vector3> lane in roadLanes) {
+                    lane.Add(lane[0]);
+                }
+            }
             
             // Draw the lanes in different colors
             for(int i = 0; i < roadLanes.Count; i++) 
