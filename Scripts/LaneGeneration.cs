@@ -149,13 +149,19 @@ namespace RoadArchitect {
             DrawLanePath(laneObject, lane, color: color);
         }
 
+        #nullable enable
         /// <summary>Draws a line, used for debugging</summary>
-        public static void DrawDebugLine(List<Vector3> line, Color? color = null, float width = 0.5f) 
+        public static void DrawDebugLine(List<Vector3> line, Color? color = null, float width = 0.5f, GameObject? parent = null)
         {
             if(line.Count < 1) return;
             
             // Create the line object
             GameObject lineObject = new GameObject();
+
+            // Set the parent game object if one was passed
+            if(parent != null) {
+                lineObject.transform.parent = parent.transform;
+            }
 
             // Add a line renderer to the lane
             lineObject.AddComponent<LineRenderer>();
@@ -163,5 +169,6 @@ namespace RoadArchitect {
             // Draw the lane path
             DrawLanePath(lineObject, line, color: color ?? Color.red, width: width);
         }
+        #nullable disable
     }
 }
