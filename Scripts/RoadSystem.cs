@@ -30,6 +30,10 @@ namespace RoadArchitect
 
 
         public DrivingSide drivingSide = DrivingSide.Right;
+        void Start()
+        {
+            ClearRoadGraph();
+        }
         /// <summary> Adds a new road to this RoadSystem </summary>
         public GameObject AddRoad(bool _isForceSelected = false)
         {
