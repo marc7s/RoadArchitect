@@ -23,7 +23,7 @@ namespace RoadArchitect
 
         public Camera editorPlayCamera = null;
         public GameObject Graph;
-        private Dictionary<string, GraphNode> roadGraph;
+        public Dictionary<string, GraphNode> RoadGraph { get; private set; }
         [UnityEngine.Serialization.FormerlySerializedAs("ShowGraph")]
         public bool ShowGraph = false;
         #endregion
@@ -152,17 +152,17 @@ namespace RoadArchitect
             CreateEmptyRoadGraph();
             
             // Generate a new graph
-            roadGraph = RoadSystemGraph.GenerateRoadGraph(this);
+            RoadGraph = RoadSystemGraph.GenerateRoadGraph(this);
 
             // Display the graph if the setting is active
             if (ShowGraph) {
-                RoadSystemGraph.DrawGraph(this, roadGraph);
+                RoadSystemGraph.DrawGraph(this, RoadGraph);
             }
                 
         }
 
         private void ClearRoadGraph() {
-            roadGraph = null;
+            RoadGraph = null;
             if(Graph != null) {
                 Object.DestroyImmediate(Graph);
             }
