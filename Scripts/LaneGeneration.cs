@@ -123,6 +123,7 @@ namespace RoadArchitect {
             lr.endWidth = width;
             
             // Set the positions
+            lr.positionCount = lane.Count;
             lr.SetPositions(lane.ToArray());
         }
 
